@@ -17,10 +17,12 @@ This repository contains two components for creating highly customizable and rea
     - Navigate to the `body` directory.
     - Run `python3 freehand_annotation_interface.py`.
     - Utilize the functions provided in the interface to create your custom experiments.
+    ![Demo Interface](https://github.com/Cheersbbg/Custom-BCI-Experiment-Generator/blob/main/demo-interface.gif)
+
     - Click the Submit button to generate the animation.
     - Scroll to find your desired interval for stimulus presentation and click the Save GIF button 
-    ![Experiments Demo](https://github.com/Cheersbbg/Custom-BCI-Experiment-Generator/blob/main/demo.gif)
+    ![Demo Animation](https://github.com/Cheersbbg/Custom-BCI-Experiment-Generator/blob/main/demo-animation.gif)
 
-For more detailed instructions and a Docker setup, please refer to the repository.
 
+This repository is actively being updated with new features and functionalities. For the latest detailed instructions, a Docker setup, applications and more, please keep an eye on future updates of this repo:)
 
