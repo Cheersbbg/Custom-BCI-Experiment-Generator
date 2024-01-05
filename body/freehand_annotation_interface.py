@@ -148,6 +148,10 @@ class AnnotationInterface:
         self.erase_button = tk.Button(self.matrix_frame_buttons, text = "Erase", command = self.erase)
         self.erase_button.pack()
 
+# # Create the Mirror Dots button.
+        mirror_dots_button = tk.Button(self.matrix_frame_buttons, text="Mirror Dots", command=self.mirror_dots)
+        mirror_dots_button.pack()
+
 # # Create the Choose Dot Color button.
         self.color_button = tk.Button(self.matrix_frame_buttons, text = "Choose Dot Color", command = self.choose_dot_color)
         self.color_button.pack()
@@ -397,27 +401,22 @@ class AnnotationInterface:
             return dot_id
         return None
     
+
+    def mirror_dots(self):
+        image_midline = self.image_x_offset + self.canvas_width / 2
+        for dot_id, (x, y) in list(self.dots.items()):
+            mirrored_x = 2 * image_midline - x
+            if not self.is_overlapping(mirrored_x, y):
+                self.create_dot(mirrored_x, y)
+        self.update_display()
+        self.update_adjacency_matrix()
+
+    
     def canvas_to_image_coords(self, canvas_x, canvas_y):
         """Convert canvas coordinates to image coordinates."""
         image_x = (canvas_x - self.image_x_offset) / self.scale_x
         image_y = (canvas_y - self.image_y_offset) / self.scale_y
         return image_x, image_y
-
-    def highlight_matrix_row_column(self, dot_id):
-# # Find indices in both sorted lists.
-        dot_index_x = next(i for i, (dot_id_x, _) in enumerate(self.sort_dots_x()) if dot_id_x == dot_id)
-        dot_index_y = next(i for i, (dot_id_y, _) in enumerate(self.sort_dots_y()) if dot_id_y == dot_id)
-
-# # Highlight the corresponding row and column in both matrices.
-        for matrix_text, dot_index in [(self.matrix_text_x, dot_index_x), (self.matrix_text_y, dot_index_y)]:
-            line_index = dot_index + 1
-# # Highlight row.
-            matrix_text.tag_add("highlight_row", f"{line_index}.0", f"{line_index}.end")
-# # Highlight column (for each character position in all lines).
-            for i in range(1, len(self.dots) + 1):
-                matrix_text.tag_add("highlight_col", f"{i}.{dot_index}", f"{i}.{dot_index + 1}")
-            matrix_text.tag_config("highlight_row", background = "lightblue")
-            matrix_text.tag_config("highlight_col", background = "lightblue")
 
     def highlight_matrix_row_column(self, dot_id):
         dot_index_x = next(i for i, (dot_id_x, _) in enumerate(self.sort_dots_x()) if dot_id_x == dot_id)
@@ -681,8 +680,11 @@ class AnnotationInterface:
             self.update_dot_color(draw, start_dot, current_line_color)
 
 # # Update end dot color when the line reaches it.
-            if connection_index < len(self.connections) and step == self.total_steps - 1:
+            if connection_index < len(self.connections) and step == self.total_steps - 1:              
+                root.after(0, self.unhighlight_matrix(), None)
                 self.update_dot_color(draw, end_dot, current_line_color)
+                root.after(0, lambda: self.highlight_matrix_row_column(end_dot))
+
         return image
 
     def save_gif(self, ms_per_frame):
@@ -862,6 +864,7 @@ class AnnotationInterface:
         return math.sqrt((end_x - start_x) ** 2 + (end_y - start_y) ** 2)
 
 root = tk.Tk()
+root.title("Annotation for Introspection Interface")
 import os
 
 # Get the current working directory.
