@@ -12,7 +12,7 @@ This repository contains two components for creating highly customizable and rea
       ```
       python3 hands-generator.py --exp_name left_right_palms --list_of_lists "[[5, 1, 7, 9, 3], [6, 0, 8, 4, 2]]"
       ```
-      
+
       ![Hands Indices](https://github.com/Cheersbbg/Custom-BCI-Experiment-Generator/blob/main/hand-contours-labels.png)
 
     - The hand templates will be generated in a new folder with the specified name. These templates can be used as visual stimuli for your experiments.
@@ -30,5 +30,6 @@ This repository contains two components for creating highly customizable and rea
     ![Demo Animation](https://github.com/Cheersbbg/Custom-BCI-Experiment-Generator/blob/main/demo-animation.gif)
 
 
-This repository is actively being updated with new features and functionalities. For the latest detailed instructions, a Docker setup, applications and more, please keep an eye on future updates of this repo:)
+This repository is actively being updated with new features, functionalities and intergrations with ML.
 
+If you have any questions, really any, feel free to contact me at cheersbbg [at] gmail [dot] com
