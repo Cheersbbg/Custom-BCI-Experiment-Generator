@@ -8,8 +8,10 @@ This repository contains two components for creating highly customizable and rea
       ```
       python3 hands-generator.py --exp_name <experiment_name> --list_of_lists "<list_of_lists>"
       ```
-      Replace `<experiment_name>` with the desired name for your experiment and `<list_of_lists>` with a list of contour indices.
-      
+      Replace `<experiment_name>` with the desired name for your experiment and `<list_of_lists>` with a list of contour indices. For example:
+
+      `python3 hands-generator.py --exp_name left_right_palms --list_of_lists "[[5, 1, 7, 9, 3], [6, 0, 8, 4, 2]]"`
+
       ![Hands Indices](https://github.com/Cheersbbg/Custom-BCI-Experiment-Generator/blob/main/hand-contours-labels.png)
 
     - The hand templates will be generated in a new folder with the specified name. These templates can be used as visual stimuli for your experiments.
