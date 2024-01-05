@@ -4,3 +4,5 @@ This repo contains two components that creates completely customizable and out-o
 Hands Template Generation and Body Annotation Interface
 
 More specific manual and a docker will be updated soon:)
+
+![Experiments Demo](https://github.com/Cheersbbg/Custom-BCI-Experiment-Generator/blob/main/demo.gif)
