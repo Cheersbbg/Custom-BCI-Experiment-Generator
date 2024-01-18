@@ -27,12 +27,13 @@ This repository contains two components for creating highly customizable and rea
 
     ![Demo Interface](https://github.com/Cheersbbg/Custom-BCI-Experiment-Generator/blob/main/demo-interface.gif)
 
-    - Click the Submit button to generate the animation.
+    - Click **Submit** to generate the animation.
     - Scroll to find your desired interval for stimulus presentation and click the Save GIF button 
 
     ![Demo Animation](https://github.com/Cheersbbg/Custom-BCI-Experiment-Generator/blob/main/demo-animation.gif)
 
-    --Click More Experiments to for generation of variation of the path(currently only considers the proximity of dots and number of annotated connections)
+    --Click **More Experiments**  on the pop-up window for generation of variation of the path(currently only considers the proximity of dots and number of annotated connections)
+
     ![Demo Interpolation](https://github.com/Cheersbbg/Custom-BCI-Experiment-Generator/blob/main/demo-interpolation.gif)
 
 
