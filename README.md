@@ -16,7 +16,7 @@ This repository contains two components for creating highly customizable and rea
       ![Hands Indices](https://github.com/Cheersbbg/Custom-BCI-Experiment-Generator/blob/main/hand-contours-labels.png)
 
     - The hand templates (images and Gif) will be generated in a new folder with the specified name. These templates can be used as visual stimuli for your experiments.
-    
+
     ![Demo Gif](https://github.com/Cheersbbg/Custom-BCI-Experiment-Generator/blob/main/hands/SingleFinger/SingleFinger%5B1%2C%206%2C%209%2C%207%2C%204%2C%205%2C%207%2C%202%2C%209%2C%200%5D.gif)
 
 
@@ -31,6 +31,9 @@ This repository contains two components for creating highly customizable and rea
     - Scroll to find your desired interval for stimulus presentation and click the Save GIF button 
 
     ![Demo Animation](https://github.com/Cheersbbg/Custom-BCI-Experiment-Generator/blob/main/demo-animation.gif)
+
+    --Click More Experiments to for generation of variation of the path(currently only considers the proximity of dots and number of annotated connections)
+    ![Demo Interpolation](https://github.com/Cheersbbg/Custom-BCI-Experiment-Generator/blob/main/demo-interpolation.gif)
 
 
 This repository is actively being updated with new features, functionalities and intergrations with ML.
