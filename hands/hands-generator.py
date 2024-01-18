@@ -4,8 +4,9 @@ import cv2
 import numpy as np
 from PIL import Image, ImageChops
 import argparse
+import imageio
 
-def custom_experiment(list_of_lists, reset, exp_name, is_white=True):
+def custom_experiment(list_of_lists, reset, exp_name, is_white=True,stimulus_interval=1):
     """
     Creates experiment and map images based on given contours.
 
@@ -23,11 +24,14 @@ def custom_experiment(list_of_lists, reset, exp_name, is_white=True):
     inv_img = ImageChops.invert(Image.fromarray(template)).convert("RGBA")
 
     exp_dir = os.path.join(os.getcwd(), exp_name)
+    print("Experiment Directory:", exp_dir)
     exp_path = os.path.join(exp_dir, "exp")
     map_path = os.path.join(exp_dir, "map")
 
     os.makedirs(exp_path, exist_ok=True)
     os.makedirs(map_path, exist_ok=True)
+
+    images = []  # List to store the images for creating the GIF
 
     for key, contour_list in enumerate(list_of_lists):
         background = np.zeros((600, 800)) if not reset else background.copy()
@@ -40,7 +44,31 @@ def custom_experiment(list_of_lists, reset, exp_name, is_white=True):
         Image.fromarray(background).convert("L").save(map_image_path)
         blend_and_save_images(map_image_path, inv_img, exp_image_path)
 
+        # Append the image to the list
+        images.append(imageio.v2.imread(exp_image_path))
     return exp_path, map_path
+
+
+def create_gifs(exp_path, Sequencelst, stimulus_interval, exp_name):
+    """
+    Creates GIFs from the experiment images.
+
+    Args:
+    exp_path: Path to the experiment images.
+    ListofLists: List of lists containing contour indices.
+    stimulus_interval: Interval between stimuli.
+    """
+    images = []
+    for key, idx in enumerate(Sequencelst):
+        print("idx:", idx)
+        exp_image_path = os.path.join(exp_path, f'image{idx}.png')
+        images.append(imageio.v2.imread(exp_image_path))
+    exp_dir = os.path.join(os.getcwd(), exp_name)
+    # Save the list of images as a GIF with the given interval
+    gif_path = os.path.join(exp_dir, f'{exp_name+str(Sequencelst)}.gif')
+    imageio.mimsave(gif_path, images, duration=stimulus_interval)  # Change the duration as per your requirement
+    return gif_path
+   
 
 def blend_and_save_images(map_image_path, inv_img, exp_image_path):
     """
@@ -58,14 +86,26 @@ def blend_and_save_images(map_image_path, inv_img, exp_image_path):
     alpha_blended = Image.blend(after, inv_img, alpha=0.6)
     alpha_blended.save(exp_image_path)
 
-
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Custom BCI Experiment Generator")
-    parser.add_argument("--exp_name", type=str, help="Name of the new experiment",default="SingleFinger")
+    parser.add_argument("--exp_name", type=str, help="Name of the new experiment", default="SingleFinger")
     parser.add_argument("--list_of_lists", type=str, help="List of lists containing contour indices", default="[[35, 25, 11], [19, 31, 21], [15, 17, 13], [27, 29, 23], [37, 39, 33], [36, 38, 32], [26, 28, 22], [14, 16, 12], [18, 30, 20], [34, 24, 10]]")
+    parser.add_argument("--si", type=int, help="Interval between stimuli in ms", default=100)
+    parser.add_argument("--seq", type=str, help="Sequencing passing a string for list index", default=[])
     args = parser.parse_args()
     EXP_NAME = args.exp_name
     LIST_OF_LISTS = eval(args.list_of_lists)
+    
+    print("Experiment Name:", args.exp_name)
+    print("List of Lists:", args.list_of_lists)
+    print("Stimulus Interval:", args.si)
+    print("Sequence:", args.seq)
+
+    #If SEQ is empty, then use the default sequence to create the gif
+    if args.seq == []:
+        SEQ = list(range(len(LIST_OF_LISTS)))
+    else:
+        SEQ = eval(args.seq)
 
     # Load history of experiments
     if os.path.exists('history_dict.pickle'):
@@ -74,11 +114,21 @@ if __name__ == "__main__":
     else:
         history_exps = {}
 
-    if EXP_NAME not in history_exps.keys():
-        exp_path, map_exp = custom_experiment(LIST_OF_LISTS, reset=False, exp_name=EXP_NAME, is_white=True)
+    # Check if experiment already exists
+    if EXP_NAME in history_exps:
+        print("Experiment already exists!")
+        exp_path = history_exps[EXP_NAME]
+        gif_path = create_gifs(exp_path, SEQ, args.si, EXP_NAME)
+        print("Gif saved at: ", gif_path)
+    
+    else:
+        print("Creating new experiment...")
+        print("Experiment Name:", EXP_NAME)
+        print("List of Lists:", LIST_OF_LISTS)
+        exp_path, map_exp = custom_experiment(LIST_OF_LISTS, reset=False, exp_name=EXP_NAME, is_white=True, stimulus_interval=args.si)
+        gif_path = create_gifs(exp_path, SEQ, args.si, EXP_NAME)
+        print("Gif saved at: ", gif_path)
         history_exps[EXP_NAME] = exp_path
 
         with open('history_dict.pickle', 'wb') as f:
             pickle.dump(history_exps, f)
-    else:        exp_path = history_exps[EXP_NAME]
-
