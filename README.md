@@ -6,16 +6,19 @@ This repository contains two components for creating highly customizable and rea
     - Navigate to the `hands` directory.
     - Run the `hands-generator.py` script using the following command:
       ```
-      python3 hands-generator.py --exp_name <experiment_name> --list_of_lists "<list_of_lists>"
+      python3 hands-generator.py --exp_name <experiment_name> --list_of_lists "<list_of_lists>" --si <si> --seq "<seq>"
       ```
-      Replace `<experiment_name>` with the desired name for your experiment and `<list_of_lists>` with a list of contour indices. For example:
+      Replace `<experiment_name>` with the desired name for your experiment, `<list_of_lists>` with a list of contour indices to make images,`<si>` with stimulus presentation interval, and `<seq>` with the desired sequence of the stimulus. For example:
       ```
-      python3 hands-generator.py --exp_name left_right_palms --list_of_lists "[[5, 1, 7, 9, 3], [6, 0, 8, 4, 2]]"
+      python3 hands-generator.py --exp_name left_right_palms --list_of_lists "[[5, 1, 7, 9, 3], [6, 0, 8, 4, 2]]" --seq "1,0"
       ```
 
       ![Hands Indices](https://github.com/Cheersbbg/Custom-BCI-Experiment-Generator/blob/main/hand-contours-labels.png)
 
-    - The hand templates will be generated in a new folder with the specified name. These templates can be used as visual stimuli for your experiments.
+    - The hand templates (images and Gif) will be generated in a new folder with the specified name. These templates can be used as visual stimuli for your experiments.
+    
+    ![Demo Gif](https://github.com/Cheersbbg/Custom-BCI-Experiment-Generator/blob/main/hands/SingleFinger/SingleFinger%5B1%2C%206%2C%209%2C%207%2C%204%2C%205%2C%207%2C%202%2C%209%2C%200%5D.gif)
+
 
 2. Body Annotation Interface: This component allows you to create body annotations for your experiments. To create body annotations, follow these steps:
     - Navigate to the `body` directory.
