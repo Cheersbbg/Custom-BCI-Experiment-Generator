@@ -59,14 +59,13 @@ def create_gifs(exp_path, Sequencelst, stimulus_interval, exp_name):
     stimulus_interval: Interval between stimuli.
     """
     images = []
-    for key, idx in enumerate(Sequencelst):
-        print("idx:", idx)
+    for _, idx in enumerate(Sequencelst):
         exp_image_path = os.path.join(exp_path, f'image{idx}.png')
         images.append(imageio.v2.imread(exp_image_path))
     exp_dir = os.path.join(os.getcwd(), exp_name)
     # Save the list of images as a GIF with the given interval
     gif_path = os.path.join(exp_dir, f'{exp_name+str(Sequencelst)}.gif')
-    imageio.mimsave(gif_path, images, duration=stimulus_interval)  # Change the duration as per your requirement
+    imageio.mimsave(gif_path, images, duration=stimulus_interval, loop=0)  # Change the duration as per your requirement
     return gif_path
    
 
@@ -90,7 +89,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Custom BCI Experiment Generator")
     parser.add_argument("--exp_name", type=str, help="Name of the new experiment", default="SingleFinger")
     parser.add_argument("--list_of_lists", type=str, help="List of lists containing contour indices", default="[[35, 25, 11], [19, 31, 21], [15, 17, 13], [27, 29, 23], [37, 39, 33], [36, 38, 32], [26, 28, 22], [14, 16, 12], [18, 30, 20], [34, 24, 10]]")
-    parser.add_argument("--si", type=int, help="Interval between stimuli in ms", default=100)
+    parser.add_argument("--si", type=int, help="Interval between stimuli in ms", default=400)
     parser.add_argument("--seq", type=str, help="Sequencing passing a string for list index", default=[])
     args = parser.parse_args()
     EXP_NAME = args.exp_name
