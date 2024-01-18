@@ -17,7 +17,7 @@ This repository contains two components for creating highly customizable and rea
 
     - The hand templates (images and Gif) will be generated in a new folder with the specified name. These templates can be used as visual stimuli for your experiments.
 
-    ![Demo Gif](https://github.com/Cheersbbg/Custom-BCI-Experiment-Generator/blob/main/hands/SingleFinger/SingleFinger%5B1%2C%206%2C%209%2C%207%2C%204%2C%205%2C%207%2C%202%2C%209%2C%200%5D.gif)
+      ![Demo Gif](https://github.com/Cheersbbg/Custom-BCI-Experiment-Generator/blob/main/hands/SingleFinger/SingleFinger%5B1%2C%206%2C%209%2C%207%2C%204%2C%205%2C%207%2C%202%2C%209%2C%200%5D.gif)
 
 
 2. Body Annotation Interface: This component allows you to create body annotations for your experiments. To create body annotations, follow these steps:
