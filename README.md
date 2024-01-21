@@ -2,7 +2,7 @@
 
 This repository contains two components for creating highly customizable and ready-to-use experiment paradigms for conducting body scanning:
 
-1. Hands Template Generation: This component allows you to generate hand templates for your experiments. To create hand templates, follow these steps:
+1. Hands Template Generation: This component allows you to generate hand templates in pre-determined setting for your experiments. To create hand templates, follow these steps:
     - Navigate to the `hands` directory.
     - Run the `hands-generator.py` script using the following command:
       ```
@@ -15,12 +15,12 @@ This repository contains two components for creating highly customizable and rea
 
       ![Hands Indices](https://github.com/Cheersbbg/Custom-BCI-Experiment-Generator/blob/main/hand-contours-labels.png)
 
-    - The hand templates (images and Gif) will be generated in a new folder with the specified name. These templates can be used as visual stimuli for your experiments.
+    - The hand templates (images and GIFs) will be generated in a new folder with the specified name. These templates can be used as visual stimuli for your experiments.
 
       ![Demo Gif](https://github.com/Cheersbbg/Custom-BCI-Experiment-Generator/blob/main/hands/SingleFinger/SingleFinger%5B1%2C%206%2C%209%2C%207%2C%204%2C%205%2C%207%2C%202%2C%209%2C%200%5D.gif)
 
 
-2. Body Annotation Interface: This component allows you to create body annotations for your experiments. To create body annotations, follow these steps:
+2. Body Annotation Interface: This component allows you to customize experiment paradigms using any symmetrical template and it generates to variations beyond input. To freehand, follow these steps:
     - Navigate to the `body` directory.
     - Run `python3 freehand_annotation_interface.py`.
     - Utilize the functions provided in the interface to create your custom experiments.
