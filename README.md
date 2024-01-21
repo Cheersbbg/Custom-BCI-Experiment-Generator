@@ -32,11 +32,11 @@ This repository contains two components for creating highly customizable and rea
 
     ![Demo Animation](https://github.com/Cheersbbg/Custom-BCI-Experiment-Generator/blob/main/demo-animation.gif)
 
-    - To generate a variation of the path, click on the **More Experiments** button in the pop-up window. Currently this feature only considers the proximity and number of annotated overlays as the significance value. More options will be added in the future.
+    - To generate a variation of the path, click on the **More Experiments** button in the pop-up window(Currently this feature only considers the proximity and number of annotated overlays as the significance value meaning you can emphasize paths by drawing more connections. A **load weights from model** options will be added soon).
 
     ![Demo Interpolation](https://github.com/Cheersbbg/Custom-BCI-Experiment-Generator/blob/main/demo-interpolation.gif)
 
-    - To export the targets' features as a body symmetry aware and space aware matrix, use **Export** button 
+    - To export the targets' features as a body symmetry aware and space aware matrix for graphs, use **Export** button 
 
 Here is another demo of how to use the functions to speed up experiment making in this interface:
 
