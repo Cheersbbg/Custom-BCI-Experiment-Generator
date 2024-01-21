@@ -5,6 +5,8 @@ import numpy as np
 import os
 import tkinter as tk
 import random
+import csv
+import json
 
 from PIL import Image, ImageTk, ImageDraw
 from tkinter import colorchooser
@@ -203,6 +205,10 @@ class AnnotationInterface:
         self.leave_button = tk.Button(self.matrix_frame_buttons, text = "Leave", command = master.quit)
         self.leave_button.pack()
 
+# # Create the Export to Model button
+        self.export_button = tk.Button(self.matrix_frame_buttons, text = "Export to Model", command = self.export_to_model)
+        self.export_button.pack()
+
 # # Create the connections label.
         self.connections_label = tk.Label(master, text = "Connections:\n", justify = tk.LEFT)
         self.connections_label.pack()
@@ -214,13 +220,16 @@ class AnnotationInterface:
     
     def generate_random_color(self):
         return "#%06x" % random.randint(0, 0xFFFFFF)
+    
+
     def start(self):
 # # Delay image loading to ensure the canvas has been sized and displayed.
         self.master.after(100, self.load_background_image, self.image_path)
+
+
     def load_templates_from_folder(self, folder_path):
 # # Initialize with the option to add a new template.
-        self.templates = {"Add New...": None}
-        
+        self.templates = {"Add New...": None} 
 # # List all files in the given folder.
         for file in os.listdir(folder_path):
 # # Check if the file is an image (you can add or remove extensions as needed).
@@ -229,28 +238,37 @@ class AnnotationInterface:
                 template_key = os.path.splitext(file)[0]
 # # Add the file to the templates dictionary with its path.
                 self.templates[template_key] = os.path.join(folder_path, file)
-                
 # # Add the default selection option.
         self.templates["Default"] = self.templates.get("Default", "body_template.png")
 
-    def update_display(self):
-# # Format and display connections.
+    
+    def update_display(self, hovered_dot_id=None):
+        # Format and display connections.
         connections_text = "Connections:\n" + "\n".join([f"{start} -> {end}" for start, end in self.connections])
-        self.connections_label.config(text = connections_text)
+        self.connections_label.config(text=connections_text)
 
-# # Format and display dot objects.
-        dots_text = "Dot Objects:\n" + "\n".join([str(dot) for dot in self.dot_objects])
-        self.dots_label.config(text = dots_text)
+        # Format and display dot objects.
+        dots_text = "Dot Objects:\n"
+        for dot in self.dot_objects:
+            if hovered_dot_id is not None and dot == hovered_dot_id:
+                # Highlight the hovered dot ID
+                dots_text += f"*{str(dot)}*\n"  # You can change the formatting as needed
+            else:
+                dots_text += str(dot) + "\n"
+        self.dots_label.config(text=dots_text)
+
 
     def update_radius(self, event = None):
         self.dot_radius = self.radius_scale.get()
 # # Optional: Erase and redraw everything with new radius.
         self.erase()
 
+
     def choose_dot_color(self):
         color_code = colorchooser.askcolor(title = "Choose dot color")[1]
         if color_code:
             self.dot_color = color_code
+
 
     def load_background_image(self, image_path):
         canvas_width = self.canvas.winfo_width()
@@ -302,6 +320,7 @@ class AnnotationInterface:
 # # If the canvas size is still not valid, try again after a short delay.
             self.master.after(100, self.load_background_image, image_path)
 
+
     def add_new_template(self):
 # # Open file dialog to select an image file.
         file_path = filedialog.askopenfilename(
@@ -332,14 +351,17 @@ class AnnotationInterface:
             self.load_background_image(self.image_path)
             self.erase()
 
+
     def sort_dots_x(self):
         """Sort dots based on x - coordinate."""
         return sorted(self.dots.items(), key = lambda item: item[1][0])
+
 
     def sort_dots_y(self):
         """Sort dots based on y - coordinate."""
         return sorted(self.dots.items(), key = lambda item: item[1][1])
     
+
     def update_adjacency_matrix(self):
 # # Sort dots for both matrices.
         sorted_dots_x = self.sort_dots_x()
@@ -375,15 +397,18 @@ class AnnotationInterface:
         self.matrix_text_y.delete('1.0', tk.END)
         self.matrix_text_y.insert('1.0', matrix_str_y)
 
+
     def is_overlapping(self, x, y):
         for _, (dot_x, dot_y) in self.dots.items():
             if ((x - dot_x) ** 2 + (y - dot_y) ** 2) <= (2 * self.dot_radius) ** 2:
                 return True
         return False
     
+
     def is_within_bounds(self, x, y):
         return 0 <= x <= self.canvas_width and 0 <= y <= self.canvas_height
     
+
     def create_dot(self, x, y, interpolate = False):
         dot_count = len(self.dot_objects)
         outline_color = self.get_rainbow_color(dot_count, self.color_variety)  
@@ -410,9 +435,11 @@ class AnnotationInterface:
             return dot_id
         return None
     
+
     def on_dot_enter(self, dot_id):
         self.highlight_matrix_row_column(dot_id)
         self.sort_dots_by_proximity(dot_id)
+        self.update_display(hovered_dot_id=dot_id)
 
 
     def mirror_dots(self):
@@ -424,8 +451,86 @@ class AnnotationInterface:
                 self.mirrored_dot_pairs.append((dot_id, new_dot_id))
         self.update_display()
         self.update_adjacency_matrix()
+        self.update_mirror_matrix()
 
+    def update_mirror_matrix(self):
+        # Save the reordered dot_id
+        image_midline = self.image_x_offset + self.canvas_width / 2
+        left_half_dots = [(dot_id, (x, y)) for dot_id, (x, y) in self.dots.items() if x < image_midline]
+        self.left_half_dots = sorted(left_half_dots, key=lambda dot: dot[1][0])  # Sort based on x-coordinate
     
+        right_half_dots = [(dot_id, (x, y)) for dot_id, (x, y) in self.dots.items() if x > image_midline]
+        self.right_half_dots = sorted(right_half_dots, key=lambda dot: dot[1][0], reverse=True)  # Sort based on reversed x-coordinate
+        print(self.left_half_dots, self.right_half_dots)
+        # Initialize the mirrored ajacency matrix
+        size = len(left_half_dots)
+        adjacency_matrix = np.zeros((size, size), dtype=int)
+        # Fill in the adjacency matrix with hop distances
+        for i in range(size):
+            for j in range(size):
+                # The hop distance is the absolute difference between indices
+                adjacency_matrix[i, j] = i - j
+        self.mirrored_adjacency_matrix = adjacency_matrix
+        self.update_text_widget()
+
+
+    def update_text_widget(self):
+            # Check if the popup window and text widget still exist
+            if hasattr(self, 'popup_window') and self.popup_window.winfo_exists():
+                if hasattr(self, 'text_widget'):
+                    # Clear the existing content
+                    self.text_widget.delete(1.0, tk.END)
+            # Create the adjacency matrix table
+                adjacency_matrix = self.mirrored_adjacency_matrix
+
+                # Add column labels, which are the same as row labels
+                combined_labels = [f"{left_dot_id}/{right_dot_id}" for left_dot_id, right_dot_id in
+                                zip([ld[0] for ld in self.left_half_dots], [rd[0] for rd in self.right_half_dots])]
+                column_labels = "\t".join(combined_labels)
+                self.text_widget.insert(tk.END, "\t" + column_labels + "\n")
+
+                # Add row labels and matrix values
+                for i, label in enumerate(combined_labels):
+                    row_text = label + "\t" + "\t".join(str(cell) for cell in adjacency_matrix[i]) + "\n"
+                    self.text_widget.insert(tk.END, row_text)
+
+
+    def export_to_model(self):
+        
+        def save_matrix_as_csv(matrix, combined_labels, filename):
+            with open(filename, 'w', newline='') as csvfile:
+                writer = csv.writer(csvfile)
+                # Write the header
+                writer.writerow([f"{label:<{len(label)}}" for label in combined_labels])
+                # Write the rest of the rows
+                for row in matrix:
+                    writer.writerow([str(cell) for cell in row])
+
+        def save_action():
+            # Ask the user for a location and name to save the matrix
+            filename = filedialog.asksaveasfilename(defaultextension=".csv",
+                                                    filetypes=[("CSV files", "*.csv"), ("All files", "*.*")],initialdir=os.getcwd(),initialfile = "MYMatrix_EXPERIMENT_NAME.csv")
+            if filename:
+                # Save the mirrored adjacency matrix and indices as CSV
+                combined_labels = [f"{ld}/{rd}" for ld, rd in zip([ld for ld in self.left_half_dots], [rd for rd in self.right_half_dots])]
+                # Save the mirrored adjacency matrix as CSV
+                save_matrix_as_csv(self.mirrored_adjacency_matrix, combined_labels, filename)
+                messagebox.showinfo("Save Successful", f"Matrix saved to {filename}")
+                
+        if not hasattr(self, "popup_window") or not self.popup_window.winfo_exists():
+            self.popup_window = tk.Toplevel()
+            self.popup_window.resizable(True, True)
+            self.popup_window.title("Adjacency Matrix")
+            self.popup_window.attributes('-topmost', True)
+            # Create a Text widget for better formatting
+            self.text_widget = tk.Text(self.popup_window)
+            self.text_widget.pack(fill=tk.BOTH, expand=True)
+            save_button = tk.Button(self.popup_window, text="Save", command=save_action)
+            save_button.pack()
+
+        self.update_text_widget()
+        
+
     def canvas_to_image_coords(self, canvas_x, canvas_y):
         """Convert canvas coordinates to image coordinates."""
         image_x = (canvas_x - self.image_x_offset) / self.scale_x
@@ -461,10 +566,12 @@ class AnnotationInterface:
     def apply_interpolation_to_line(self, percentage, connection):
         if percentage == 0:
             return
-     
+        
         self.canvas.delete(self.line_objects[ - 1])
         self.line_objects.pop()
         self.action_history.pop()
+
+        image_midline = self.image_x_offset + self.canvas_width / 2
 
         if connection in self.connections:
             start_dot, end_dot = connection
@@ -474,7 +581,7 @@ class AnnotationInterface:
             distance = ((end_x - start_x) ** 2 + (end_y - start_y) ** 2) ** 0.5
             max_dots = int(distance / (2 * self.dot_radius)) - 1
             num_points_to_show = int(max_dots * percentage / 100)
-
+            
 # # Remove the original connection.
             self.connections.remove(connection)
 
@@ -490,6 +597,19 @@ class AnnotationInterface:
                     if connection not in self.interpolated_dot_ids:
                         self.interpolated_dot_ids[connection] = set()
                     self.interpolated_dot_ids[connection].add(interpolated_dot_id)
+
+                # Check if the connection is symmetrical
+                mirrored_x = 2 * image_midline - inter_x
+                if self.is_overlapping(mirrored_x, inter_y):
+                # Find which dot it is overlapping with
+                    for dot_id, (dot_x, dot_y) in self.dots.items():
+                        if ((mirrored_x - dot_x) ** 2 + (inter_y - dot_y) ** 2) <= (2 * self.dot_radius) ** 2:
+                            self.mirrored_dot_pairs.append((interpolated_dot_id, dot_id))
+                            print("added mirrored pair")
+                            print(interpolated_dot_id, dot_id)
+                            self.update_mirror_matrix()
+                            break
+
 # # Create new connections.
             line_color = self.get_rainbow_color(len(self.line_objects), 20)
             all_dots = [start_dot] + new_dot_ids + [end_dot]
@@ -505,6 +625,7 @@ class AnnotationInterface:
             for dot_id in self.interpolated_dot_ids[connection]:
                 self.canvas.delete(dot_id)
             del self.interpolated_dot_ids[connection]
+            self.update_text_widget()
 
     def erase(self):
         for dot in self.dot_objects:
@@ -523,6 +644,8 @@ class AnnotationInterface:
         self.action_history.clear()
         self.update_adjacency_matrix()
         self.update_display()
+        self.mirrored_dot_pairs.clear()
+        self.update_mirror_matrix()
 
 
     def toggle_single_process_mode(self):
@@ -952,6 +1075,8 @@ class AnnotationInterface:
                 self.connections.pop()
             self.update_adjacency_matrix()
             self.update_display()
+            self.update_mirror_matrix()
+
 
     def line_length(self, start_dot, end_dot):
         start_x, start_y = self.dots_image_coordinates[start_dot]
