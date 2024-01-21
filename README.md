@@ -38,7 +38,8 @@ This repository contains two components for creating highly customizable and rea
 
     - To export the targets' features as a body symmetry aware and space aware matrix, use **Export** button 
     Here is more demo of how to use this interface:
-    ![Demo Export to model](https://github.com/Cheersbbg/Custom-BCI-Experiment-Generator/blob/main/demo-export_matrix.gif)
+    
+![Demo Export to model](https://github.com/Cheersbbg/Custom-BCI-Experiment-Generator/blob/main/demo-export_matrix.gif)
 
 This repository is actively being updated with new features, functionalities and intergrations with ML.
 
