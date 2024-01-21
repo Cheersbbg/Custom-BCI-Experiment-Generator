@@ -32,7 +32,7 @@ This repository contains two components for creating highly customizable and rea
 
     ![Demo Animation](https://github.com/Cheersbbg/Custom-BCI-Experiment-Generator/blob/main/demo-animation.gif)
 
-    - To generate a variation of the path, click on the **More Experiments** button in the pop-up window. Currently this feature only considers the proximity and number of annotated overlays as the significance value. More will be added in the future.
+    - To generate a variation of the path, click on the **More Experiments** button in the pop-up window. Currently this feature only considers the proximity and number of annotated overlays as the significance value. More options will be added in the future.
 
     ![Demo Interpolation](https://github.com/Cheersbbg/Custom-BCI-Experiment-Generator/blob/main/demo-interpolation.gif)
 
