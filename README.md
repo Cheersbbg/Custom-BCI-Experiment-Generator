@@ -40,8 +40,9 @@ This repository contains two components for creating highly customizable and rea
 
 Here is another demo of how to use the functions to speed up experiment making in this interface:
 
-<br><br>![Demo Export to model](https://github.com/Cheersbbg/Custom-BCI-Experiment-Generator/blob/main/demo-export_matrix.gif)
-
+<p align="center">
+  <img src="https://github.com/Cheersbbg/Custom-BCI-Experiment-Generator/blob/main/demo-export_matrix.gif" alt="Demo Export to model">
+</p>
 
 This repository is actively being updated with new features, functionalities and intergrations with ML.
 
