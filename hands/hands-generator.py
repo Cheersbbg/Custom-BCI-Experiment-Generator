@@ -49,7 +49,7 @@ def custom_experiment(list_of_lists, reset, exp_paradigm, is_white=True,stimulus
     return exp_path, map_path
 
 
-def create_gifs(exp_path, Sequencelst, stimulus_interval, exp_name, save_path=""):
+def create_gifs(exp_path, Sequencelst, stimulus_interval, exp_name, save_path="", nodelist=[]):
     """
     Creates GIFs from the experiment images.
 
@@ -59,9 +59,17 @@ def create_gifs(exp_path, Sequencelst, stimulus_interval, exp_name, save_path=""
     stimulus_interval: Interval between stimuli.
     """
     images = []
-    for _, idx in enumerate(Sequencelst):
-        exp_image_path = os.path.join(exp_path, f'image{idx}.png')
-        images.append(imageio.v2.imread(exp_image_path))
+    for idx, num in enumerate(Sequencelst):
+        exp_image_path = os.path.join(exp_path, f'image{num}.png')
+        if nodelist[idx] != None:
+            node_image_path = os.path.join(exp_path, f'image{nodelist[idx]}.png')
+            node_image = Image.open(node_image_path)
+            exp_image = Image.open(exp_image_path)
+            blend_image = Image.blend(exp_image, node_image, alpha=0.5)
+            merged_image = imageio.core.asarray(blend_image)
+            images.append(merged_image)
+        else:
+            images.append(imageio.v2.imread(exp_image_path))
     if save_path == "":
         exp_dir = exp_path.rsplit('exp', 1)[0]
         print("exp_dir", exp_dir)
@@ -100,6 +108,7 @@ if __name__ == "__main__":
     parser.add_argument("--si", type=int, help="Interval between stimuli in ms", default=400)
     parser.add_argument("--seq", type=str, help="Sequencing passing a string for list index", default=[])
     parser.add_argument("--save_path",nargs='?', type=str, help="Path to save the experiment", default="")
+    parser.add_argument("--node_index_list", type=str, help="List of node indices", default=[])
 
     args = parser.parse_args()
     EXP_PARADIGM = args.exp_paradigm
@@ -118,6 +127,11 @@ if __name__ == "__main__":
     else:
         SEQ = eval(args.seq)
 
+    if args.node_index_list == []:
+        nodelist = [None] * len(SEQ)
+    else:
+        nodelist = eval(args.node_index_list)
+
     # Load history of experiments
     if os.path.exists('history_dict.pickle'):
         with open('history_dict.pickle', 'rb') as f:
@@ -129,7 +143,7 @@ if __name__ == "__main__":
     if EXP_PARADIGM in history_exps:
         print("Experiment already exists!")
         exp_path = history_exps[EXP_PARADIGM]
-        gif_path = create_gifs(exp_path, SEQ, args.si, EXP_NAME, save_path=args.save_path)
+        gif_path = create_gifs(exp_path, SEQ, args.si, EXP_NAME, save_path=args.save_path, nodelist=nodelist)
         print("Gif saved at: ", gif_path)
     
     else:
@@ -137,7 +151,7 @@ if __name__ == "__main__":
         print("Experiment Name:", EXP_NAME)
         print("List of Lists:", LIST_OF_LISTS)
         exp_path, map_exp = custom_experiment(LIST_OF_LISTS, reset=False, exp_paradigm=EXP_PARADIGM, is_white=True, stimulus_interval=args.si)
-        gif_path = create_gifs(exp_path, SEQ, args.si, EXP_NAME, save_path=args.save_path)
+        gif_path = create_gifs(exp_path, SEQ, args.si, EXP_NAME, save_path=args.save_path, nodelist=nodelist)
         print("Gif saved at: ", gif_path)
         history_exps[EXP_PARADIGM] = exp_path
 
