@@ -27,13 +27,13 @@ Here is another demo of how to use the functions to speed up experiment making i
 </p>
 
 
-2. Hands Template Generation: This component allows you to generate hand templates in pre-determined setting for your experiments. To create hand templates, follow these steps:
+2. Hands Template Generation: This component simplifies finger imagery paradigm. 
     - Navigate to the `hands` directory.
-    - Run the `hands-generator.py` script using the following command:
+    - Run command:
       ```
       python3 hands-generator.py --exp_name <experiment_name> --list_of_lists "<list_of_lists>" --si <si> --seq "<seq>"
       ```
-      Replace `<experiment_name>` with the desired name for your experiment, `<list_of_lists>` with a list of contour indices to make images,`<si>` with stimulus presentation interval, and `<seq>` with the desired sequence of the stimulus. For example:
+      Replace `<experiment_name>` with the name for the experiment, `<list_of_lists>` with a list of contour indices to make images,`<si>` with stimulus presentation interval, and `<seq>` with the desired sequence of the stimulus. For example:
       ```
       python3 hands-generator.py --exp_name left_right_palms --list_of_lists "[[5, 1, 7, 9, 3], [6, 0, 8, 4, 2]]" --seq "1,0"
       ```
