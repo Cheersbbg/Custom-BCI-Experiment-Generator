@@ -45,5 +45,3 @@ Here is another demo of how to use the functions to speed up experiment making i
 </p>
 
 This repository is actively being updated with new features, functionalities and intergrations with ML.
-
-If you have any questions, really any, feel free to contact me at cheersbbg [at] gmail [dot] com
